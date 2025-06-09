@@ -2,16 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { CalendarFold } from "lucide-react";
 
 const inputFocusClass =
-  "bg-transparent appearance-none text-center text-gray-400 placeholder-gray-400 uppercase font-medium px-0 border-none outline-none focus:outline-none focus:ring-0 focus:bg-transparent focus:placeholder-gray-400 focus:text-gray-700";
-
+  "focus:text-white focus:outline-none focus:ring-0 focus:bg-lt-purple focus:rounded selection:bg-transparent selection:text-inherit focus:placeholder-white focus:font-bold";
+  
 export interface DateInputControlledProps {
   value: string;
   onChange: (val: string) => void;
   formSubmitted?: boolean;
-  hasError?: boolean;
 }
 
-export const DateInputControlled = ({ value, onChange, formSubmitted, hasError }: DateInputControlledProps) => {
+export const DateInputControlled = ({ value, onChange, formSubmitted }: DateInputControlledProps) => {
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [year, setYear] = useState("");
@@ -117,168 +116,189 @@ export const DateInputControlled = ({ value, onChange, formSubmitted, hasError }
   const isYearComplete = year.length === 4;
 
   return (
-    <div className="relative w-full max-w-xs">
-      <div className="flex items-center bg-gray-100 rounded-2xl px-6 py-3 w-full relative">
+    <div className="relative w-56">
+      <div className="flex items-center bg-gray-100 text-gray-700 px-3 py-2 rounded-xl focus-within:ring-2 focus-within:ring-lt-purple w-full relative">
         {/* Month */}
-        <input
-          ref={monthRef}
-          type="number"
-          value={month}
-          onChange={(e) => {
-            const val = e.target.value.replace(/\D/g, "").slice(0, 2);
-            clearTimeout(monthDebounceRef.current);
-            if (val !== month) setMonth(val);
-            if (val === "") {
-              handleUpdate("", day, year);
-              return;
-            }
-            if (val.length === 2) {
-              monthDebounceRef.current = setTimeout(() => {
-                const isValidMonth = Number(val) >= 1 && Number(val) <= 12;
-                handleUpdate(val, day, year);
-                if (isValidMonth && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
+        <div className="relative flex flex-col items-center">
+          <input
+            ref={monthRef}
+            type="number"
+            value={month}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+              clearTimeout(monthDebounceRef.current);
+              if (val !== month) setMonth(val);
+              if (val === "") {
+                handleUpdate("", day, year);
+                return;
+              }
+              if (val.length === 2) {
+                monthDebounceRef.current = setTimeout(() => {
+                  const isValidMonth = Number(val) >= 1 && Number(val) <= 12;
+                  handleUpdate(val, day, year);
+                  if (isValidMonth && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
+                    dayRef.current?.focus();
+                  }
+                }, debounceVal);
+              }
+            }}
+            onFocus={() => setMonthTouched(true)}
+            onBlur={() => {
+              setMonthTouched(true);
+              clearTimeout(monthDebounceRef.current);
+              if (month.length === 1 && /^[1-9]$/.test(month)) {
+                const padded = month.padStart(2, "0");
+                if (padded !== month) setMonth(padded);
+                handleUpdate(padded, day, year);
+                const isValidMonth = Number(padded) >= 1 && Number(padded) <= 12;
+                if (isValidMonth) {
                   dayRef.current?.focus();
                 }
-              }, debounceVal);
-            }
-          }}
-          onFocus={() => setMonthTouched(true)}
-          onBlur={() => {
-            setMonthTouched(true);
-            clearTimeout(monthDebounceRef.current);
-            if (month.length === 1 && /^[1-9]$/.test(month)) {
-              const padded = month.padStart(2, "0");
-              if (padded !== month) setMonth(padded);
-              handleUpdate(padded, day, year);
-              const isValidMonth = Number(padded) >= 1 && Number(padded) <= 12;
-              if (isValidMonth) {
-                dayRef.current?.focus();
               }
-            }
-          }}
-          placeholder="MM"
-          className={`w-10 ${inputFocusClass}${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`}
-          onKeyDown={(e) => {
-            lastKeyRef.current = e.key;
-            let newVal = month;
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              let num = Number(month) || 0;
-              if (num < 12) {
-                num += 1;
-                newVal = num.toString().padStart(2, "0");
-                setMonth(newVal);
-                handleUpdate(newVal, day, year);
+            }}
+            placeholder="MM"
+            className={`bg-transparent w-10 text-center ${inputFocusClass}${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`}
+            onKeyDown={(e) => {
+              lastKeyRef.current = e.key;
+              let newVal = month;
+              if (e.key === "ArrowUp") {
+                e.preventDefault();
+                let num = Number(month) || 0;
+                if (num < 12) {
+                  num += 1;
+                  newVal = num.toString().padStart(2, "0");
+                  setMonth(newVal);
+                  handleUpdate(newVal, day, year);
+                }
+              } else if (e.key === "ArrowDown") {
+                e.preventDefault();
+                let num = Number(month) || 1;
+                if (num > 1) {
+                  num -= 1;
+                  newVal = num.toString().padStart(2, "0");
+                  setMonth(newVal);
+                  handleUpdate(newVal, day, year);
+                }
+              } else if ((e.key === "Backspace" || e.key === "Delete") && month === "") {
+                return;
               }
-            } else if (e.key === "ArrowDown") {
-              e.preventDefault();
-              let num = Number(month) || 1;
-              if (num > 1) {
-                num -= 1;
-                newVal = num.toString().padStart(2, "0");
-                setMonth(newVal);
-                handleUpdate(newVal, day, year);
-              }
-            } else if ((e.key === "Backspace" || e.key === "Delete") && month === "") {
-              return;
-            }
-          }}
-        />
-        <span className="mx-2 text-gray-400 text-lg select-none">/</span>
+            }}
+            style={{
+              border: "none",
+              outline: "none",
+              padding: 3,
+            }}
+          />
+        </div>
+        <span className="mx-1">/</span>
         {/* Day */}
-        <input
-          ref={dayRef}
-          type="number"
-          value={day}
-          onChange={(e) => {
-            const val = e.target.value.replace(/\D/g, "").slice(0, 2);
-            clearTimeout(dayDebounceRef.current);
-            if (val !== day) setDay(val);
-            if (val === "") {
-              handleUpdate(month, "", year);
-              return;
-            }
-            if (val.length === 2) {
-              dayDebounceRef.current = setTimeout(() => {
-                const isValidDay = Number(val) >= 1 && Number(val) <= 31;
-                handleUpdate(month, val, year);
-                if (isValidDay && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
+        <div className="relative flex flex-col items-center">
+          <input
+            ref={dayRef}
+            type="number"
+            value={day}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+              clearTimeout(dayDebounceRef.current);
+              if (val !== day) setDay(val);
+              if (val === "") {
+                handleUpdate(month, "", year);
+                return;
+              }
+              if (val.length === 2) {
+                dayDebounceRef.current = setTimeout(() => {
+                  const isValidDay = Number(val) >= 1 && Number(val) <= 31;
+                  handleUpdate(month, val, year);
+                  if (isValidDay && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
+                    yearRef.current?.focus();
+                  }
+                }, debounceVal);
+              }
+            }}
+            onFocus={() => setDayTouched(true)}
+            onBlur={() => {
+              setDayTouched(true);
+              clearTimeout(dayDebounceRef.current);
+              if (day.length === 1 && /^[1-9]$/.test(day)) {
+                const padded = day.padStart(2, "0");
+                if (padded !== day) setDay(padded);
+                handleUpdate(month, padded, year);
+                const isValidDay = Number(padded) >= 1 && Number(padded) <= 31;
+                if (isValidDay) {
                   yearRef.current?.focus();
                 }
-              }, debounceVal);
-            }
-          }}
-          onFocus={() => setDayTouched(true)}
-          onBlur={() => {
-            setDayTouched(true);
-            clearTimeout(dayDebounceRef.current);
-            if (day.length === 1 && /^[1-9]$/.test(day)) {
-              const padded = day.padStart(2, "0");
-              if (padded !== day) setDay(padded);
-              handleUpdate(month, padded, year);
-              const isValidDay = Number(padded) >= 1 && Number(padded) <= 31;
-              if (isValidDay) {
-                yearRef.current?.focus();
               }
-            }
-          }}
-          placeholder="DD"
-          className={`w-10 ${inputFocusClass}${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`}
-          onKeyDown={(e) => {
-            lastKeyRef.current = e.key;
-            let newVal = day;
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              let num = Number(day) || 0;
-              if (num < 31) {
-                num += 1;
-                newVal = num.toString().padStart(2, "0");
-                setDay(newVal);
-                handleUpdate(month, newVal, year);
+            }}
+            placeholder="DD"
+            className={`bg-transparent w-10 text-center ${inputFocusClass}${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`}
+            onKeyDown={(e) => {
+              lastKeyRef.current = e.key;
+              let newVal = day;
+              if (e.key === "ArrowUp") {
+                e.preventDefault();
+                let num = Number(day) || 0;
+                if (num < 31) {
+                  num += 1;
+                  newVal = num.toString().padStart(2, "0");
+                  setDay(newVal);
+                  handleUpdate(month, newVal, year);
+                }
+              } else if (e.key === "ArrowDown") {
+                e.preventDefault();
+                let num = Number(day) || 1;
+                if (num > 1) {
+                  num -= 1;
+                  newVal = num.toString().padStart(2, "0");
+                  setDay(newVal);
+                  handleUpdate(month, newVal, year);
+                }
+              } else if ((e.key === "Backspace" || e.key === "Delete") && day === "") {
+                monthRef.current?.focus();
+                e.preventDefault();
               }
-            } else if (e.key === "ArrowDown") {
-              e.preventDefault();
-              let num = Number(day) || 1;
-              if (num > 1) {
-                num -= 1;
-                newVal = num.toString().padStart(2, "0");
-                setDay(newVal);
-                handleUpdate(month, newVal, year);
-              }
-            } else if ((e.key === "Backspace" || e.key === "Delete") && day === "") {
-              monthRef.current?.focus();
-              e.preventDefault();
-            }
-          }}
-        />
-        <span className="mx-2 text-gray-400 text-lg select-none">/</span>
+            }}
+            style={{
+              border: "none",
+              outline: "none",
+              padding: 3,
+            }}
+          />
+        </div>
+        <span className="mx-1">/</span>
         {/* Year */}
-        <input
-          ref={yearRef}
-          type="number"
-          value={year}
-          onChange={(e) => {
-            const val = e.target.value.replace(/\D/g, "").slice(0, 4);
-            setYear(val);
-            handleUpdate(month, day, val);
-          }}
-          onFocus={() => setYearTouched(true)}
-          onBlur={() => setYearTouched(true)}
-          placeholder="YYYY"
-          className={`w-16 ${inputFocusClass}${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`}
-          onKeyDown={(e) => {
-            lastKeyRef.current = e.key;
-            if ((e.key === "Backspace" || e.key === "Delete") && year === "") {
-              dayRef.current?.focus();
-              e.preventDefault();
-            }
-            if (e.key === "ArrowDown" && (year === "" || Number(year) <= 1000)) {
-              e.preventDefault();
-            }
-          }}
-        />
+        <div className="relative flex flex-col items-center">
+          <input
+            ref={yearRef}
+            type="number"
+            value={year}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+              setYear(val);
+              handleUpdate(month, day, val);
+            }}
+            onFocus={() => setYearTouched(true)}
+            onBlur={() => setYearTouched(true)}
+            placeholder="YYYY"
+            className={`bg-transparent w-16 text-center ${inputFocusClass}${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`}
+            onKeyDown={(e) => {
+              lastKeyRef.current = e.key;
+              if ((e.key === "Backspace" || e.key === "Delete") && year === "") {
+                dayRef.current?.focus();
+                e.preventDefault();
+              }
+              if (e.key === "ArrowDown" && (year === "" || Number(year) <= 1000)) {
+                e.preventDefault();
+              }
+            }}
+            style={{
+              border: "none",
+              outline: "none",
+              padding: 3,
+            }}
+          />
+        </div>
         {/* CalendarFold Icon */}
-        <div className="ml-auto flex items-center">
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
           <CalendarFold className="w-6 h-6 text-gray-400" style={{ display: "block" }} />
         </div>
       </div>

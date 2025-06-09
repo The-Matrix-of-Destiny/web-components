@@ -100,8 +100,8 @@ var CardFooter = ({ children, className = "" }) => {
 var import_react = require("react");
 var import_lucide_react = require("lucide-react");
 var import_jsx_runtime3 = require("react/jsx-runtime");
-var inputFocusClass = "bg-transparent appearance-none text-center text-gray-400 placeholder-gray-400 uppercase font-medium px-0 border-none outline-none focus:outline-none focus:ring-0 focus:bg-transparent focus:placeholder-gray-400 focus:text-gray-700";
-var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
+var inputFocusClass = "focus:text-white focus:outline-none focus:ring-0 focus:bg-lt-purple focus:rounded selection:bg-transparent selection:text-inherit focus:placeholder-white focus:font-bold";
+var DateInputControlled = ({ value, onChange, formSubmitted }) => {
   const [month, setMonth] = (0, import_react.useState)("");
   const [day, setDay] = (0, import_react.useState)("");
   const [year, setYear] = (0, import_react.useState)("");
@@ -185,8 +185,8 @@ var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
   const isMonthComplete = month.length === 2;
   const isDayComplete = day.length === 2;
   const isYearComplete = year.length === 4;
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "relative w-full max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center bg-gray-100 rounded-2xl px-6 py-3 w-full relative", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "relative w-56", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center bg-gray-100 text-gray-700 px-3 py-2 rounded-xl focus-within:ring-2 focus-within:ring-lt-purple w-full relative", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "relative flex flex-col items-center", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
       "input",
       {
         ref: monthRef,
@@ -227,7 +227,7 @@ var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
           }
         },
         placeholder: "MM",
-        className: `w-10 ${inputFocusClass}${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`,
+        className: `bg-transparent w-10 text-center ${inputFocusClass}${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`,
         onKeyDown: (e) => {
           lastKeyRef.current = e.key;
           let newVal = month;
@@ -252,11 +252,16 @@ var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
           } else if ((e.key === "Backspace" || e.key === "Delete") && month === "") {
             return;
           }
+        },
+        style: {
+          border: "none",
+          outline: "none",
+          padding: 3
         }
       }
-    ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "mx-2 text-gray-400 text-lg select-none", children: "/" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    ) }),
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "mx-1", children: "/" }),
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "relative flex flex-col items-center", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
       "input",
       {
         ref: dayRef,
@@ -297,7 +302,7 @@ var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
           }
         },
         placeholder: "DD",
-        className: `w-10 ${inputFocusClass}${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`,
+        className: `bg-transparent w-10 text-center ${inputFocusClass}${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`,
         onKeyDown: (e) => {
           var _a;
           lastKeyRef.current = e.key;
@@ -324,11 +329,16 @@ var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
             (_a = monthRef.current) == null ? void 0 : _a.focus();
             e.preventDefault();
           }
+        },
+        style: {
+          border: "none",
+          outline: "none",
+          padding: 3
         }
       }
-    ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "mx-2 text-gray-400 text-lg select-none", children: "/" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    ) }),
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "mx-1", children: "/" }),
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "relative flex flex-col items-center", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
       "input",
       {
         ref: yearRef,
@@ -342,7 +352,7 @@ var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
         onFocus: () => setYearTouched(true),
         onBlur: () => setYearTouched(true),
         placeholder: "YYYY",
-        className: `w-16 ${inputFocusClass}${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`,
+        className: `bg-transparent w-16 text-center ${inputFocusClass}${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`,
         onKeyDown: (e) => {
           var _a;
           lastKeyRef.current = e.key;
@@ -353,17 +363,22 @@ var DateInputControlled = ({ value, onChange, formSubmitted, hasError }) => {
           if (e.key === "ArrowDown" && (year === "" || Number(year) <= 1e3)) {
             e.preventDefault();
           }
+        },
+        style: {
+          border: "none",
+          outline: "none",
+          padding: 3
         }
       }
-    ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "ml-auto flex items-center", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_lucide_react.CalendarFold, { className: "w-6 h-6 text-gray-400", style: { display: "block" } }) })
+    ) }),
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_lucide_react.CalendarFold, { className: "w-6 h-6 text-gray-400", style: { display: "block" } }) })
   ] }) });
 };
 
 // src/components/DateInput/DateInputUncontrolled.tsx
 var import_react2 = require("react");
 var import_jsx_runtime4 = require("react/jsx-runtime");
-var DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted, hasError }) => {
+var DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted }) => {
   const [value, setValue] = (0, import_react2.useState)(defaultValue);
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
     DateInputControlled,
@@ -373,8 +388,7 @@ var DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted, hasEr
         setValue(val);
         onChange == null ? void 0 : onChange(val);
       },
-      formSubmitted,
-      hasError
+      formSubmitted
     }
   );
 };

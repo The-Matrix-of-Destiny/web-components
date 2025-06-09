@@ -5,10 +5,9 @@ export interface DateInputUncontrolledProps {
   defaultValue?: string;
   onChange?: (val: string) => void;
   formSubmitted?: boolean;
-  hasError?: boolean;
 }
 
-export const DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted, hasError }: DateInputUncontrolledProps) => {
+export const DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted }: DateInputUncontrolledProps) => {
   const [value, setValue] = useState(defaultValue);
 
   return (
@@ -19,7 +18,6 @@ export const DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitt
         onChange?.(val);
       }}
       formSubmitted={formSubmitted}
-      hasError={hasError}
     />
   );
 }; 
