@@ -111,9 +111,9 @@ var sizeStyles = {
     input: {
       padding: 1,
       width: {
-        month: "w-8",
-        day: "w-8",
-        year: "w-14"
+        month: "w-10",
+        day: "w-10",
+        year: "w-16"
       }
     }
   },
@@ -122,9 +122,9 @@ var sizeStyles = {
     input: {
       padding: 2,
       width: {
-        month: "w-10",
-        day: "w-10",
-        year: "w-16"
+        month: "w-12",
+        day: "w-12",
+        year: "w-20"
       }
     }
   },
@@ -133,9 +133,9 @@ var sizeStyles = {
     input: {
       padding: 3,
       width: {
-        month: "w-12",
-        day: "w-12",
-        year: "w-20"
+        month: "w-16",
+        day: "w-16",
+        year: "w-24"
       }
     }
   }
