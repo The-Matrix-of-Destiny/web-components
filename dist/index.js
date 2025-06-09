@@ -107,7 +107,7 @@ var inputStyle = {
 };
 var sizeStyles = {
   sm: {
-    container: "w-48",
+    container: "w-56",
     input: {
       padding: 1,
       width: {
@@ -118,7 +118,7 @@ var sizeStyles = {
     }
   },
   md: {
-    container: "w-56",
+    container: "w-60",
     input: {
       padding: 2,
       width: {
