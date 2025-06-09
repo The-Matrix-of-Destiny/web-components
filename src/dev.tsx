@@ -8,7 +8,7 @@ const App = () => {
   const [value, setValue] = useState("2024-06-01");
   return (
     <div className="p-8">
-      <DateInputControlled value={value} onChange={setValue} />
+      <DateInputControlled value={value} onChange={setValue} size="sm"/>
     </div>
   );
 };

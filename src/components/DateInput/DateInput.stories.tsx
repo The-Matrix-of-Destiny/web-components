@@ -3,12 +3,17 @@ import { useState } from 'react';
 import { DateInputControlled } from './DateInputControlled';
 import { DateInputUncontrolled } from './DateInputUncontrolled';
 
-const meta: Meta = {
+const meta = {
   title: 'Components/DateInput',
   tags: ['autodocs'],
   component: DateInputControlled,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component: 'A controlled date input component that allows users to input dates in MM/DD/YYYY format with validation and size customization.',
+      },
+    },
   },
   argTypes: {
     value: {
@@ -22,18 +27,52 @@ const meta: Meta = {
       control: 'boolean',
       description: 'Whether the form has been submitted (for validation)',
     },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'The size of the date input component',
+      defaultValue: 'md',
+    },
   },
-};
+} satisfies Meta<typeof DateInputControlled>;
+
 export default meta;
 
-type Story = StoryObj;
+type Story = StoryObj<typeof DateInputControlled>;
 
 export const Default: Story = {
+  args: {
+    value: '2024-06-01',
+    size: 'md',
+  },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
+    return (
+      <div className="space-y-4">
+        <DateInputControlled {...args} value={value} onChange={setValue} />
+        <div>Value: <span className="font-mono">{value}</span></div>
+      </div>
+    );
+  },
+};
+
+export const Sizes: Story = {
   render: () => {
     const [value, setValue] = useState('2024-06-01');
     return (
-      <div className="space-y-4">
-        <DateInputControlled value={value} onChange={setValue} />
+      <div className="space-y-8">
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-gray-500">Small</h3>
+          <DateInputControlled value={value} onChange={setValue} size="sm" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-gray-500">Medium (Default)</h3>
+          <DateInputControlled value={value} onChange={setValue} size="md" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-gray-500">Large</h3>
+          <DateInputControlled value={value} onChange={setValue} size="lg" />
+        </div>
         <div>Value: <span className="font-mono">{value}</span></div>
       </div>
     );
@@ -41,12 +80,16 @@ export const Default: Story = {
 };
 
 export const WithValidation: Story = {
-  render: () => {
+  args: {
+    size: 'md',
+  },
+  render: (args) => {
     const [value, setValue] = useState('');
     const [formSubmitted, setFormSubmitted] = useState(false);
     return (
       <div className="space-y-4">
         <DateInputControlled 
+          {...args}
           value={value} 
           onChange={setValue} 
           formSubmitted={formSubmitted} 
@@ -64,11 +107,15 @@ export const WithValidation: Story = {
 };
 
 export const InvalidDate: Story = {
-  render: () => {
-    const [value, setValue] = useState('invalid-date');
+  args: {
+    value: 'invalid-date',
+    size: 'md',
+  },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
     return (
       <div className="space-y-4">
-        <DateInputControlled value={value} onChange={setValue} />
+        <DateInputControlled {...args} value={value} onChange={setValue} />
         <div>Value: <span className="font-mono">{value}</span></div>
       </div>
     );
