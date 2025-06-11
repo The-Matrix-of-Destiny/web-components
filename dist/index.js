@@ -27,6 +27,7 @@ __export(index_exports, {
   CardFooter: () => CardFooter,
   CardHeader: () => CardHeader,
   CardTitle: () => CardTitle,
+  DateInputControlled: () => DateInputControlled,
   DateInputUncontrolled: () => DateInputUncontrolled
 });
 module.exports = __toCommonJS(index_exports);
@@ -382,7 +383,6 @@ var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) =
     /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none flex-shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_lucide_react.CalendarFold, { className: "w-6 h-6 text-gray-400", style: { display: "block" } }) })
   ] }) });
 };
-var DateInputControlled_default = DateInputControlled;
 
 // src/components/DateInput/DateInputUncontrolled.tsx
 var import_react2 = require("react");
@@ -390,7 +390,7 @@ var import_jsx_runtime4 = require("react/jsx-runtime");
 var DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted }) => {
   const [value, setValue] = (0, import_react2.useState)(defaultValue);
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-    DateInputControlled_default,
+    DateInputControlled,
     {
       value,
       onChange: (val) => {
@@ -409,6 +409,7 @@ var DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted }) => 
   CardFooter,
   CardHeader,
   CardTitle,
+  DateInputControlled,
   DateInputUncontrolled
 });
 //# sourceMappingURL=index.js.map

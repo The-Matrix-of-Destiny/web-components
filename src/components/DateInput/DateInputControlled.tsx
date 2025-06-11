@@ -32,7 +32,7 @@ const inputStyle = {
   border: "none",
 }
 
-const DateInputControlled: FC<DateInputControlledProps> = ({ value, onChange, formSubmitted, width = "w-56" }) => {
+export const DateInputControlled: FC<DateInputControlledProps> = ({ value, onChange, formSubmitted, width = "w-56" }) => {
   const [month, setMonth] = useState<string>("");
   const [day, setDay] = useState<string>("");
   const [year, setYear] = useState<string>("");
@@ -323,5 +323,3 @@ const DateInputControlled: FC<DateInputControlledProps> = ({ value, onChange, fo
     </div>
   );
 };
-
-export default DateInputControlled; 

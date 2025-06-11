@@ -351,7 +351,6 @@ var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) =
     /* @__PURE__ */ jsx3("div", { className: "absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none flex-shrink-0", children: /* @__PURE__ */ jsx3(CalendarFold, { className: "w-6 h-6 text-gray-400", style: { display: "block" } }) })
   ] }) });
 };
-var DateInputControlled_default = DateInputControlled;
 
 // src/components/DateInput/DateInputUncontrolled.tsx
 import { useState as useState2 } from "react";
@@ -359,7 +358,7 @@ import { jsx as jsx4 } from "react/jsx-runtime";
 var DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted }) => {
   const [value, setValue] = useState2(defaultValue);
   return /* @__PURE__ */ jsx4(
-    DateInputControlled_default,
+    DateInputControlled,
     {
       value,
       onChange: (val) => {
@@ -377,6 +376,7 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
+  DateInputControlled,
   DateInputUncontrolled
 };
 //# sourceMappingURL=index.mjs.map

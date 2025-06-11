@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -24,6 +24,7 @@ interface DateInputControlledProps {
     formSubmitted?: boolean;
     width?: string;
 }
+declare const DateInputControlled: FC<DateInputControlledProps>;
 
 interface DateInputUncontrolledProps {
     defaultValue?: string;
@@ -32,4 +33,4 @@ interface DateInputUncontrolledProps {
 }
 declare const DateInputUncontrolled: ({ defaultValue, onChange, formSubmitted }: DateInputUncontrolledProps) => react_jsx_runtime.JSX.Element;
 
-export { Button, type ButtonProps, Card, CardContent, CardFooter, CardHeader, type CardProps, CardTitle, type DateInputControlledProps, DateInputUncontrolled, type DateInputUncontrolledProps };
+export { Button, type ButtonProps, Card, CardContent, CardFooter, CardHeader, type CardProps, CardTitle, DateInputControlled, type DateInputControlledProps, DateInputUncontrolled, type DateInputUncontrolledProps };

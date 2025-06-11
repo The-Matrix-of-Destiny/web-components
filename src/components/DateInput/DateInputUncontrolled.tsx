@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DateInputControlled from "./DateInputControlled";
+import { DateInputControlled } from "./DateInputControlled";
 
 export interface DateInputUncontrolledProps {
   defaultValue?: string;

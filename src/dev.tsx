@@ -2,7 +2,7 @@ import "./styles/global.css";
 
 import { useState } from "react";
 import ReactDOM from "react-dom/client";
-import DateInputControlled from "./components/DateInput/DateInputControlled";
+import { DateInputControlled } from "./components/DateInput/DateInputControlled";
 
 const App = () => {
   const [value, setValue] = useState("2024-06-01");

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import DateInputControlled from './DateInputControlled';
+import { DateInputControlled } from './DateInputControlled';
 import { DateInputUncontrolled } from './DateInputUncontrolled';
 
 const meta = {
