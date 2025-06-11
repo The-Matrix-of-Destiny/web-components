@@ -10,7 +10,7 @@ const App = () => {
     <div className="p-8 flex flex-col gap-4">
       <DateInputControlled value={value} onChange={setValue} width="w-40"/>
       <DateInputControlled value={value} onChange={setValue} />
-      <DateInputControlled value={value} onChange={setValue} width="w-72"/>
+      <DateInputControlled value={value} onChange={setValue} width="w-72" focusBgColor="maroon" focusTextColor="white"/>
     </div>
   );
 };

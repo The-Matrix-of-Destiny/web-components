@@ -7,32 +7,18 @@ export interface DateInputControlledProps {
   onChange: (val: string) => void;
   formSubmitted?: boolean;
   width?: string;
+  focusBgColor?: "purple" | "green" | "blue" | "maroon";
+  focusTextColor?: "white" | "black" | "gray";
 }
 
 // Constants
-const inputFocusClass = `
-  text-gray-800
-  bg-transparent
-  rounded
-  border-2
-  border-transparent
-  font-normal
-  placeholder-gray-400
-  outline-none
-  focus:text-white
-  focus:bg-lt-purple
-  focus:font-bold
-  focus:border-lt-purple
-  focus:placeholder-white
-  focus:ring-0
-  focus:shadow-md
-`.replace(/\s+/g, ' ');
+
 
 const inputStyle = {
   border: "none",
 }
 
-export const DateInputControlled: FC<DateInputControlledProps> = ({ value, onChange, formSubmitted, width = "w-56" }) => {
+export const DateInputControlled: FC<DateInputControlledProps> = ({ value, onChange, formSubmitted, width = "w-56", focusBgColor = "purple", focusTextColor = "white" }) => {
   const [month, setMonth] = useState<string>("");
   const [day, setDay] = useState<string>("");
   const [year, setYear] = useState<string>("");
@@ -48,6 +34,37 @@ export const DateInputControlled: FC<DateInputControlledProps> = ({ value, onCha
   const monthDebounceRef = useRef<ReturnType<typeof setTimeout>>();
   const dayDebounceRef = useRef<ReturnType<typeof setTimeout>>();
   const lastKeyRef = useRef<string | null>(null);
+
+  // Static mappings for Tailwind focus classes (now using simple color names)
+  const focusBgClassMap: Record<string, string> = {
+    purple: "focus:bg-lt-purple",
+    green: "focus:bg-green-500",
+    blue: "focus:bg-blue-500",
+    maroon: "focus:bg-lt-dark-red/80",
+  };
+  const focusTextClassMap: Record<string, string> = {
+    white: "focus:text-white",
+    black: "focus:text-black",
+    gray: "focus:text-gray-800",
+  };
+  const focusBgClass = focusBgClassMap[focusBgColor] || focusBgClassMap["purple"];
+  const focusTextClass = focusTextClassMap[focusTextColor] || focusTextClassMap["white"];
+
+  const inputFocusClass = `
+    text-gray-800
+    bg-transparent
+    rounded
+    border-2
+    border-transparent
+    font-normal
+    placeholder-gray-400
+    outline-none
+    focus:font-bold
+    focus:border-lt-purple
+    focus:placeholder-white
+    focus:ring-0
+    focus:shadow-md
+  `.replace(/\s+/g, ' ');
 
   useEffect(() => {
     // Only update local state if value is a valid YYYY-MM-DD
@@ -185,7 +202,7 @@ export const DateInputControlled: FC<DateInputControlledProps> = ({ value, onCha
                 }
               }}
               placeholder="MM"
-              className={`bg-transparent w-full text-center ${inputFocusClass} ${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`}
+              className={`bg-transparent w-full text-center ${inputFocusClass} ${focusTextClass} ${focusBgClass} ${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`}
               onKeyDown={(e) => {
                 lastKeyRef.current = e.key;
                 let newVal = month;
@@ -255,7 +272,7 @@ export const DateInputControlled: FC<DateInputControlledProps> = ({ value, onCha
                 }
               }}
               placeholder="DD"
-              className={`bg-transparent w-full text-center ${inputFocusClass} ${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`}
+              className={`bg-transparent w-full text-center ${inputFocusClass} ${focusTextClass} ${focusBgClass} ${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`}
               onKeyDown={(e) => {
                 lastKeyRef.current = e.key;
                 let newVal = day;
@@ -300,7 +317,7 @@ export const DateInputControlled: FC<DateInputControlledProps> = ({ value, onCha
               onFocus={() => setYearTouched(true)}
               onBlur={() => setYearTouched(true)}
               placeholder="YYYY"
-              className={`bg-transparent w-full text-center ${inputFocusClass} ${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`}
+              className={`bg-transparent w-full text-center ${inputFocusClass} ${focusTextClass} ${focusBgClass} ${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`}
               onKeyDown={(e) => {
                 lastKeyRef.current = e.key;
                 if ((e.key === "Backspace" || e.key === "Delete") && year === "") {

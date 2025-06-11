@@ -23,6 +23,8 @@ interface DateInputControlledProps {
     onChange: (val: string) => void;
     formSubmitted?: boolean;
     width?: string;
+    focusBgColor?: "purple" | "green" | "blue" | "maroon";
+    focusTextColor?: "white" | "black" | "gray";
 }
 declare const DateInputControlled: FC<DateInputControlledProps>;
 

@@ -100,27 +100,10 @@ var CardFooter = ({ children, className = "" }) => {
 var import_react = require("react");
 var import_lucide_react = require("lucide-react");
 var import_jsx_runtime3 = require("react/jsx-runtime");
-var inputFocusClass = `
-  text-gray-800
-  bg-transparent
-  rounded
-  border-2
-  border-transparent
-  font-normal
-  placeholder-gray-400
-  outline-none
-  focus:text-white
-  focus:bg-lt-purple
-  focus:font-bold
-  focus:border-lt-purple
-  focus:placeholder-white
-  focus:ring-0
-  focus:shadow-md
-`.replace(/\s+/g, " ");
 var inputStyle = {
   border: "none"
 };
-var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) => {
+var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56", focusBgColor = "purple", focusTextColor = "white" }) => {
   const [month, setMonth] = (0, import_react.useState)("");
   const [day, setDay] = (0, import_react.useState)("");
   const [year, setYear] = (0, import_react.useState)("");
@@ -133,6 +116,34 @@ var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) =
   const monthDebounceRef = (0, import_react.useRef)();
   const dayDebounceRef = (0, import_react.useRef)();
   const lastKeyRef = (0, import_react.useRef)(null);
+  const focusBgClassMap = {
+    purple: "focus:bg-lt-purple",
+    green: "focus:bg-green-500",
+    blue: "focus:bg-blue-500",
+    maroon: "focus:bg-lt-dark-red/80"
+  };
+  const focusTextClassMap = {
+    white: "focus:text-white",
+    black: "focus:text-black",
+    gray: "focus:text-gray-800"
+  };
+  const focusBgClass = focusBgClassMap[focusBgColor] || focusBgClassMap["purple"];
+  const focusTextClass = focusTextClassMap[focusTextColor] || focusTextClassMap["white"];
+  const inputFocusClass = `
+    text-gray-800
+    bg-transparent
+    rounded
+    border-2
+    border-transparent
+    font-normal
+    placeholder-gray-400
+    outline-none
+    focus:font-bold
+    focus:border-lt-purple
+    focus:placeholder-white
+    focus:ring-0
+    focus:shadow-md
+  `.replace(/\s+/g, " ");
   (0, import_react.useEffect)(() => {
     if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
       const [y, m, d] = value.split("-");
@@ -247,7 +258,7 @@ var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) =
             }
           },
           placeholder: "MM",
-          className: `bg-transparent w-full text-center ${inputFocusClass} ${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`,
+          className: `bg-transparent w-full text-center ${inputFocusClass} ${focusTextClass} ${focusBgClass} ${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`,
           onKeyDown: (e) => {
             lastKeyRef.current = e.key;
             let newVal = month;
@@ -318,7 +329,7 @@ var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) =
             }
           },
           placeholder: "DD",
-          className: `bg-transparent w-full text-center ${inputFocusClass} ${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`,
+          className: `bg-transparent w-full text-center ${inputFocusClass} ${focusTextClass} ${focusBgClass} ${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`,
           onKeyDown: (e) => {
             var _a;
             lastKeyRef.current = e.key;
@@ -364,7 +375,7 @@ var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) =
           onFocus: () => setYearTouched(true),
           onBlur: () => setYearTouched(true),
           placeholder: "YYYY",
-          className: `bg-transparent w-full text-center ${inputFocusClass} ${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`,
+          className: `bg-transparent w-full text-center ${inputFocusClass} ${focusTextClass} ${focusBgClass} ${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`,
           onKeyDown: (e) => {
             var _a;
             lastKeyRef.current = e.key;

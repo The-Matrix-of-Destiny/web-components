@@ -33,6 +33,18 @@ const meta = {
       description: 'The width of the date input component (Tailwind width class)',
       defaultValue: 'w-56',
     },
+    focusBgColor: {
+      control: 'select',
+      options: ['purple', 'green', 'blue', 'maroon'],
+      description: 'Focus background color (purple, green, blue, maroon)',
+      defaultValue: 'purple',
+    },
+    focusTextColor: {
+      control: 'select',
+      options: ['white', 'black', 'gray'],
+      description: 'Focus text color (white, black, gray)',
+      defaultValue: 'white',
+    },
   },
 } satisfies Meta<typeof DateInputControlled>;
 
@@ -127,6 +139,41 @@ export const Uncontrolled: Story = {
     return (
       <div className="space-y-4">
         <DateInputUncontrolled defaultValue="2024-06-01" onChange={val => {}} />
+      </div>
+    );
+  },
+};
+
+export const FocusColors: Story = {
+  render: () => {
+    const [value, setValue] = useState('2024-06-01');
+    const bgColors = ['purple', 'green', 'blue', 'maroon'];
+    const textColors = ['white', 'black', 'gray'];
+    return (
+      <div className="space-y-8">
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-gray-500">Focus Background Colors</h3>
+          {bgColors.map(bg => (
+            <div key={bg} className="flex items-center gap-4">
+              <span className="w-24">{bg}</span>
+              <DateInputControlled value={value} onChange={setValue} focusBgColor={bg as any} />
+            </div>
+          ))}
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-gray-500">Focus Text Colors</h3>
+          {textColors.map(tc => (
+            <div key={tc} className="flex items-center gap-4">
+              <span className="w-24">{tc}</span>
+              <DateInputControlled value={value} onChange={setValue} focusTextColor={tc as any} />
+            </div>
+          ))}
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-gray-500">Combined Example</h3>
+          <DateInputControlled value={value} onChange={setValue} focusBgColor="maroon" focusTextColor="gray" />
+        </div>
+        <div>Value: <span className="font-mono">{value}</span></div>
       </div>
     );
   },
