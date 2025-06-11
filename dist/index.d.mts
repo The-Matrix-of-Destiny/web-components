@@ -18,14 +18,12 @@ declare const CardTitle: React.FC<CardProps>;
 declare const CardContent: React.FC<CardProps>;
 declare const CardFooter: React.FC<CardProps>;
 
-type DateInputSize = "sm" | "md" | "lg";
 interface DateInputControlledProps {
     value: string;
     onChange: (val: string) => void;
     formSubmitted?: boolean;
-    size?: DateInputSize;
+    width?: string;
 }
-declare const DateInputControlled: ({ value, onChange, formSubmitted, size }: DateInputControlledProps) => react_jsx_runtime.JSX.Element;
 
 interface DateInputUncontrolledProps {
     defaultValue?: string;
@@ -34,4 +32,4 @@ interface DateInputUncontrolledProps {
 }
 declare const DateInputUncontrolled: ({ defaultValue, onChange, formSubmitted }: DateInputUncontrolledProps) => react_jsx_runtime.JSX.Element;
 
-export { Button, type ButtonProps, Card, CardContent, CardFooter, CardHeader, type CardProps, CardTitle, DateInputControlled, DateInputUncontrolled, type DateInputUncontrolledProps };
+export { Button, type ButtonProps, Card, CardContent, CardFooter, CardHeader, type CardProps, CardTitle, type DateInputControlledProps, DateInputUncontrolled, type DateInputUncontrolledProps };

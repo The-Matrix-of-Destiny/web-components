@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { DateInputControlled } from './DateInputControlled';
+import DateInputControlled from './DateInputControlled';
 import { DateInputUncontrolled } from './DateInputUncontrolled';
 
 const meta = {
@@ -27,11 +27,11 @@ const meta = {
       control: 'boolean',
       description: 'Whether the form has been submitted (for validation)',
     },
-    size: {
+    width: {
       control: 'select',
-      options: ['sm', 'md', 'lg'],
-      description: 'The size of the date input component',
-      defaultValue: 'md',
+      options: ['w-40', 'w-56', 'w-72'],
+      description: 'The width of the date input component (Tailwind width class)',
+      defaultValue: 'w-56',
     },
   },
 } satisfies Meta<typeof DateInputControlled>;
@@ -43,9 +43,9 @@ type Story = StoryObj<typeof DateInputControlled>;
 export const Default: Story = {
   args: {
     value: '2024-06-01',
-    size: 'md',
+    width: 'w-56',
   },
-  render: (args) => {
+  render: (args: any) => {
     const [value, setValue] = useState(args.value);
     return (
       <div className="space-y-4">
@@ -62,16 +62,16 @@ export const Sizes: Story = {
     return (
       <div className="space-y-8">
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-500">Small</h3>
-          <DateInputControlled value={value} onChange={setValue} size="sm" />
+          <h3 className="text-sm font-medium text-gray-500">Small (w-40)</h3>
+          <DateInputControlled value={value} onChange={setValue} width="w-40" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-500">Medium (Default)</h3>
-          <DateInputControlled value={value} onChange={setValue} size="md" />
+          <h3 className="text-sm font-medium text-gray-500">Medium (Default, w-56)</h3>
+          <DateInputControlled value={value} onChange={setValue} width="w-56" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-500">Large</h3>
-          <DateInputControlled value={value} onChange={setValue} size="lg" />
+          <h3 className="text-sm font-medium text-gray-500">Large (w-72)</h3>
+          <DateInputControlled value={value} onChange={setValue} width="w-72" />
         </div>
         <div>Value: <span className="font-mono">{value}</span></div>
       </div>
@@ -81,9 +81,9 @@ export const Sizes: Story = {
 
 export const WithValidation: Story = {
   args: {
-    size: 'md',
+    width: 'w-56',
   },
-  render: (args) => {
+  render: (args: any) => {
     const [value, setValue] = useState('');
     const [formSubmitted, setFormSubmitted] = useState(false);
     return (
@@ -109,9 +109,9 @@ export const WithValidation: Story = {
 export const InvalidDate: Story = {
   args: {
     value: 'invalid-date',
-    size: 'md',
+    width: 'w-56',
   },
-  render: (args) => {
+  render: (args: any) => {
     const [value, setValue] = useState(args.value);
     return (
       <div className="space-y-4">

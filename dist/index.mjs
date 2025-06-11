@@ -68,57 +68,27 @@ var CardFooter = ({ children, className = "" }) => {
 import { useEffect, useRef, useState } from "react";
 import { CalendarFold } from "lucide-react";
 import { jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
-var inputFocusClass = "focus:text-white focus:outline-none focus:ring-0 focus:bg-lt-purple focus:rounded selection:bg-transparent selection:text-inherit focus:placeholder-white focus:font-bold";
+var inputFocusClass = `
+  text-gray-800
+  bg-transparent
+  rounded
+  border-2
+  border-transparent
+  font-normal
+  placeholder-gray-400
+  outline-none
+  focus:text-white
+  focus:bg-lt-purple
+  focus:font-bold
+  focus:border-lt-purple
+  focus:placeholder-white
+  focus:ring-0
+  focus:shadow-md
+`.replace(/\s+/g, " ");
 var inputStyle = {
-  border: "none",
-  outline: "none"
+  border: "none"
 };
-var sizeStyles = {
-  sm: {
-    container: "w-48",
-    input: {
-      padding: 1,
-      width: {
-        month: "w-8",
-        day: "w-8",
-        year: "w-14"
-      }
-    }
-  },
-  md: {
-    container: "w-56",
-    input: {
-      padding: 2,
-      width: {
-        month: "w-10",
-        day: "w-10",
-        year: "w-16"
-      }
-    }
-  },
-  lg: {
-    container: "w-64",
-    input: {
-      padding: 3,
-      width: {
-        month: "w-12",
-        day: "w-12",
-        year: "w-20"
-      }
-    }
-  }
-};
-var isValidDate = (year, month, day) => {
-  const isLeap = year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
-  const daysInMonth = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return year >= 1900 && year <= 2099 && month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth[month - 1];
-};
-var DateInputControlled = ({
-  value,
-  onChange,
-  formSubmitted,
-  size = "md"
-}) => {
+var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56" }) => {
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [year, setYear] = useState("");
@@ -144,217 +114,244 @@ var DateInputControlled = ({
       const yearNum = Number(y);
       const monthNum = Number(m);
       const dayNum = Number(d);
-      if (isValidDate(yearNum, monthNum, dayNum)) {
+      const isLeap = yearNum % 4 === 0 && yearNum % 100 !== 0 || yearNum % 400 === 0;
+      const daysInMonth = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      if (yearNum >= 1900 && yearNum <= 2099 && monthNum >= 1 && monthNum <= 12 && dayNum >= 1 && dayNum <= daysInMonth[monthNum - 1]) {
         onChange == null ? void 0 : onChange(`${y}-${m}-${d}`);
         return;
       }
     }
     onChange == null ? void 0 : onChange("invalid-date");
   };
-  const handleMonthChange = (val) => {
-    clearTimeout(monthDebounceRef.current);
-    if (val !== month) setMonth(val);
-    if (val === "") {
-      handleUpdate("", day, year);
-      return;
+  let monthErrorMsg = "";
+  if (monthTouched || formSubmitted) {
+    if (!month) {
+      monthErrorMsg = "Month is required";
+    } else if (month.length < 2) {
+      monthErrorMsg = "Month must be 2 digits";
+    } else if (Number(month) < 1 || Number(month) > 12) {
+      monthErrorMsg = "Month must be between 01 and 12";
     }
-    if (val.length === 2) {
-      monthDebounceRef.current = setTimeout(() => {
-        var _a;
-        const isValidMonth = Number(val) >= 1 && Number(val) <= 12;
-        handleUpdate(val, day, year);
-        if (isValidMonth && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
-          (_a = dayRef.current) == null ? void 0 : _a.focus();
-        }
-      }, 100);
+  }
+  let dayErrorMsg = "";
+  if (dayTouched || formSubmitted) {
+    if (!day) {
+      dayErrorMsg = "Day is required";
+    } else if (day.length < 2) {
+      dayErrorMsg = "Day must be 2 digits";
+    } else if (Number(day) < 1 || Number(day) > 31) {
+      dayErrorMsg = "Day must be between 01 and 31";
     }
-  };
-  const handleDayChange = (val) => {
-    clearTimeout(dayDebounceRef.current);
-    if (val !== day) setDay(val);
-    if (val === "") {
-      handleUpdate(month, "", year);
-      return;
+  }
+  let yearErrorMsg = "";
+  if (yearTouched || formSubmitted) {
+    if (!year) {
+      yearErrorMsg = "Year is required";
+    } else if (year.length < 4) {
+      yearErrorMsg = "Year must be 4 digits";
+    } else if (Number(year) < 1900 || Number(year) > 2099) {
+      yearErrorMsg = "Year must be between 1900 and 2099";
     }
-    if (val.length === 2) {
-      dayDebounceRef.current = setTimeout(() => {
-        var _a;
-        const isValidDay = Number(val) >= 1 && Number(val) <= 31;
-        handleUpdate(month, val, year);
-        if (isValidDay && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
-          (_a = yearRef.current) == null ? void 0 : _a.focus();
-        }
-      }, 100);
-    }
-  };
-  const getMonthError = () => {
-    if (!monthTouched && !formSubmitted) return "";
-    if (!month) return "Month is required";
-    if (month.length < 2) return "Month must be 2 digits";
-    if (Number(month) < 1 || Number(month) > 12) return "Month must be between 01 and 12";
-    return "";
-  };
-  const getDayError = () => {
-    if (!dayTouched && !formSubmitted) return "";
-    if (!day) return "Day is required";
-    if (day.length < 2) return "Day must be 2 digits";
-    if (Number(day) < 1 || Number(day) > 31) return "Day must be between 01 and 31";
-    return "";
-  };
-  const getYearError = () => {
-    if (!yearTouched && !formSubmitted) return "";
-    if (!year) return "Year is required";
-    if (year.length < 4) return "Year must be 4 digits";
-    if (Number(year) < 1900 || Number(year) > 2099) return "Year must be between 1900 and 2099";
-    return "";
-  };
-  const getDayMonthYearError = () => {
-    if (!dayTouched && !formSubmitted) return "";
-    if (getMonthError() || getDayError() || getYearError()) return "";
+  }
+  let dayMonthYearError = false;
+  if (!monthErrorMsg && !dayErrorMsg && !yearErrorMsg) {
     const m = Number(month);
     const d = Number(day);
     const y = Number(year);
     const isLeap = y % 4 === 0 && y % 100 !== 0 || y % 400 === 0;
     const daysInMonth = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    return d > daysInMonth[m - 1] ? "Invalid day for selected month/year" : "";
-  };
-  return /* @__PURE__ */ jsx3("div", { className: `relative ${sizeStyles[size].container}`, children: /* @__PURE__ */ jsxs2("div", { className: "flex items-center bg-gray-100 text-gray-700 px-3 py-2 rounded-xl focus-within:ring-2 focus-within:ring-lt-purple w-full relative", children: [
-    /* @__PURE__ */ jsx3("div", { className: "relative flex flex-col items-center", children: /* @__PURE__ */ jsx3(
-      "input",
-      {
-        ref: monthRef,
-        type: "number",
-        value: month,
-        onChange: (e) => handleMonthChange(e.target.value.replace(/\D/g, "").slice(0, 2)),
-        onFocus: () => setMonthTouched(true),
-        onBlur: () => {
-          var _a;
-          setMonthTouched(true);
-          clearTimeout(monthDebounceRef.current);
-          if (month.length === 1 && /^[1-9]$/.test(month)) {
-            const padded = month.padStart(2, "0");
-            if (padded !== month) setMonth(padded);
-            handleUpdate(padded, day, year);
-            const isValidMonth = Number(padded) >= 1 && Number(padded) <= 12;
-            if (isValidMonth) {
+    if (d > daysInMonth[m - 1]) {
+      dayMonthYearError = true;
+    }
+  }
+  let dayMonthYearErrorMsg = "";
+  if ((dayTouched || formSubmitted) && !monthErrorMsg && !dayErrorMsg && !yearErrorMsg && dayMonthYearError) {
+    dayMonthYearErrorMsg = "Invalid day for selected month/year";
+  }
+  const debounceVal = 100;
+  const isMonthComplete = month.length === 2;
+  const isDayComplete = day.length === 2;
+  const isYearComplete = year.length === 4;
+  return /* @__PURE__ */ jsx3("div", { className: `relative ${width}`, children: /* @__PURE__ */ jsxs2("div", { className: "flex items-center bg-gray-100 text-gray-700 px-3 py-2 pr-12 rounded-xl focus-within:ring-2 focus-within:ring-lt-purple focus-within:ring-offset-2 focus-within:ring-offset-gray-100 w-full relative", children: [
+    /* @__PURE__ */ jsxs2("div", { className: "flex flex-1 items-center min-w-0 gap-0", children: [
+      /* @__PURE__ */ jsx3("div", { className: "relative flex flex-col items-center flex-1 min-w-0", children: /* @__PURE__ */ jsx3(
+        "input",
+        {
+          ref: monthRef,
+          type: "number",
+          value: month,
+          onChange: (e) => {
+            const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+            clearTimeout(monthDebounceRef.current);
+            if (val !== month) setMonth(val);
+            if (val === "") {
+              handleUpdate("", day, year);
+              return;
+            }
+            if (val.length === 2) {
+              monthDebounceRef.current = setTimeout(() => {
+                var _a;
+                const isValidMonth = Number(val) >= 1 && Number(val) <= 12;
+                handleUpdate(val, day, year);
+                if (isValidMonth && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
+                  (_a = dayRef.current) == null ? void 0 : _a.focus();
+                }
+              }, debounceVal);
+            }
+          },
+          onFocus: () => setMonthTouched(true),
+          onBlur: () => {
+            var _a;
+            setMonthTouched(true);
+            clearTimeout(monthDebounceRef.current);
+            if (month.length === 1 && /^[1-9]$/.test(month)) {
+              const padded = month.padStart(2, "0");
+              if (padded !== month) setMonth(padded);
+              handleUpdate(padded, day, year);
+              const isValidMonth = Number(padded) >= 1 && Number(padded) <= 12;
+              if (isValidMonth) {
+                (_a = dayRef.current) == null ? void 0 : _a.focus();
+              }
+            }
+          },
+          placeholder: "MM",
+          className: `bg-transparent w-full text-center ${inputFocusClass} ${monthErrorMsg && (monthTouched || formSubmitted) && isMonthComplete ? " text-red-500" : ""}`,
+          onKeyDown: (e) => {
+            lastKeyRef.current = e.key;
+            let newVal = month;
+            if (e.key === "ArrowUp") {
+              e.preventDefault();
+              let num = Number(month) || 0;
+              if (num < 12) {
+                num += 1;
+                newVal = num.toString().padStart(2, "0");
+                setMonth(newVal);
+                handleUpdate(newVal, day, year);
+              }
+            } else if (e.key === "ArrowDown") {
+              e.preventDefault();
+              let num = Number(month) || 1;
+              if (num > 1) {
+                num -= 1;
+                newVal = num.toString().padStart(2, "0");
+                setMonth(newVal);
+                handleUpdate(newVal, day, year);
+              }
+            } else if ((e.key === "Backspace" || e.key === "Delete") && month === "") {
+              return;
+            }
+          },
+          style: inputStyle
+        }
+      ) }),
+      /* @__PURE__ */ jsx3("span", { className: "mx-1 flex-shrink-0", children: "/" }),
+      /* @__PURE__ */ jsx3("div", { className: "relative flex flex-col items-center flex-1 min-w-0", children: /* @__PURE__ */ jsx3(
+        "input",
+        {
+          ref: dayRef,
+          type: "number",
+          value: day,
+          onChange: (e) => {
+            const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+            clearTimeout(dayDebounceRef.current);
+            if (val !== day) setDay(val);
+            if (val === "") {
+              handleUpdate(month, "", year);
+              return;
+            }
+            if (val.length === 2) {
+              dayDebounceRef.current = setTimeout(() => {
+                var _a;
+                const isValidDay = Number(val) >= 1 && Number(val) <= 31;
+                handleUpdate(month, val, year);
+                if (isValidDay && lastKeyRef.current !== "ArrowUp" && lastKeyRef.current !== "ArrowDown") {
+                  (_a = yearRef.current) == null ? void 0 : _a.focus();
+                }
+              }, debounceVal);
+            }
+          },
+          onFocus: () => setDayTouched(true),
+          onBlur: () => {
+            var _a;
+            setDayTouched(true);
+            clearTimeout(dayDebounceRef.current);
+            if (day.length === 1 && /^[1-9]$/.test(day)) {
+              const padded = day.padStart(2, "0");
+              if (padded !== day) setDay(padded);
+              handleUpdate(month, padded, year);
+              const isValidDay = Number(padded) >= 1 && Number(padded) <= 31;
+              if (isValidDay) {
+                (_a = yearRef.current) == null ? void 0 : _a.focus();
+              }
+            }
+          },
+          placeholder: "DD",
+          className: `bg-transparent w-full text-center ${inputFocusClass} ${(dayErrorMsg || dayMonthYearErrorMsg) && (dayTouched || formSubmitted) && isDayComplete ? " text-red-500" : ""}`,
+          onKeyDown: (e) => {
+            var _a;
+            lastKeyRef.current = e.key;
+            let newVal = day;
+            if (e.key === "ArrowUp") {
+              e.preventDefault();
+              let num = Number(day) || 0;
+              if (num < 31) {
+                num += 1;
+                newVal = num.toString().padStart(2, "0");
+                setDay(newVal);
+                handleUpdate(month, newVal, year);
+              }
+            } else if (e.key === "ArrowDown") {
+              e.preventDefault();
+              let num = Number(day) || 1;
+              if (num > 1) {
+                num -= 1;
+                newVal = num.toString().padStart(2, "0");
+                setDay(newVal);
+                handleUpdate(month, newVal, year);
+              }
+            } else if ((e.key === "Backspace" || e.key === "Delete") && day === "") {
+              (_a = monthRef.current) == null ? void 0 : _a.focus();
+              e.preventDefault();
+            }
+          },
+          style: inputStyle
+        }
+      ) }),
+      /* @__PURE__ */ jsx3("span", { className: "mx-1 flex-shrink-0", children: "/" }),
+      /* @__PURE__ */ jsx3("div", { className: "relative flex flex-col items-center flex-1 min-w-0", children: /* @__PURE__ */ jsx3(
+        "input",
+        {
+          ref: yearRef,
+          type: "number",
+          value: year,
+          onChange: (e) => {
+            const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+            setYear(val);
+            handleUpdate(month, day, val);
+          },
+          onFocus: () => setYearTouched(true),
+          onBlur: () => setYearTouched(true),
+          placeholder: "YYYY",
+          className: `bg-transparent w-full text-center ${inputFocusClass} ${yearErrorMsg && (yearTouched || formSubmitted) && isYearComplete ? " text-red-500" : ""}`,
+          onKeyDown: (e) => {
+            var _a;
+            lastKeyRef.current = e.key;
+            if ((e.key === "Backspace" || e.key === "Delete") && year === "") {
               (_a = dayRef.current) == null ? void 0 : _a.focus();
+              e.preventDefault();
             }
-          }
-        },
-        placeholder: "MM",
-        className: `bg-transparent ${sizeStyles[size].input.width.month} text-center ${inputFocusClass}${getMonthError() ? " text-red-500" : ""}`,
-        onKeyDown: (e) => {
-          lastKeyRef.current = e.key;
-          if (e.key === "ArrowUp") {
-            e.preventDefault();
-            let num = Number(month) || 0;
-            if (num < 12) {
-              num += 1;
-              const newVal = num.toString().padStart(2, "0");
-              setMonth(newVal);
-              handleUpdate(newVal, day, year);
+            if (e.key === "ArrowDown" && (year === "" || Number(year) <= 1e3)) {
+              e.preventDefault();
             }
-          } else if (e.key === "ArrowDown") {
-            e.preventDefault();
-            let num = Number(month) || 1;
-            if (num > 1) {
-              num -= 1;
-              const newVal = num.toString().padStart(2, "0");
-              setMonth(newVal);
-              handleUpdate(newVal, day, year);
-            }
-          }
-        },
-        style: { ...inputStyle, padding: sizeStyles[size].input.padding }
-      }
-    ) }),
-    /* @__PURE__ */ jsx3("span", { className: "mx-1", children: "/" }),
-    /* @__PURE__ */ jsx3("div", { className: "relative flex flex-col items-center", children: /* @__PURE__ */ jsx3(
-      "input",
-      {
-        ref: dayRef,
-        type: "number",
-        value: day,
-        onChange: (e) => handleDayChange(e.target.value.replace(/\D/g, "").slice(0, 2)),
-        onFocus: () => setDayTouched(true),
-        onBlur: () => {
-          var _a;
-          setDayTouched(true);
-          clearTimeout(dayDebounceRef.current);
-          if (day.length === 1 && /^[1-9]$/.test(day)) {
-            const padded = day.padStart(2, "0");
-            if (padded !== day) setDay(padded);
-            handleUpdate(month, padded, year);
-            const isValidDay = Number(padded) >= 1 && Number(padded) <= 31;
-            if (isValidDay) {
-              (_a = yearRef.current) == null ? void 0 : _a.focus();
-            }
-          }
-        },
-        placeholder: "DD",
-        className: `bg-transparent ${sizeStyles[size].input.width.day} text-center ${inputFocusClass}${getDayError() || getDayMonthYearError() ? " text-red-500" : ""}`,
-        onKeyDown: (e) => {
-          var _a;
-          lastKeyRef.current = e.key;
-          if (e.key === "ArrowUp") {
-            e.preventDefault();
-            let num = Number(day) || 0;
-            if (num < 31) {
-              num += 1;
-              const newVal = num.toString().padStart(2, "0");
-              setDay(newVal);
-              handleUpdate(month, newVal, year);
-            }
-          } else if (e.key === "ArrowDown") {
-            e.preventDefault();
-            let num = Number(day) || 1;
-            if (num > 1) {
-              num -= 1;
-              const newVal = num.toString().padStart(2, "0");
-              setDay(newVal);
-              handleUpdate(month, newVal, year);
-            }
-          } else if ((e.key === "Backspace" || e.key === "Delete") && day === "") {
-            (_a = monthRef.current) == null ? void 0 : _a.focus();
-            e.preventDefault();
-          }
-        },
-        style: { ...inputStyle, padding: sizeStyles[size].input.padding }
-      }
-    ) }),
-    /* @__PURE__ */ jsx3("span", { className: "mx-1", children: "/" }),
-    /* @__PURE__ */ jsx3("div", { className: "relative flex flex-col items-center", children: /* @__PURE__ */ jsx3(
-      "input",
-      {
-        ref: yearRef,
-        type: "number",
-        value: year,
-        onChange: (e) => {
-          const val = e.target.value.replace(/\D/g, "").slice(0, 4);
-          setYear(val);
-          handleUpdate(month, day, val);
-        },
-        onFocus: () => setYearTouched(true),
-        onBlur: () => setYearTouched(true),
-        placeholder: "YYYY",
-        className: `bg-transparent ${sizeStyles[size].input.width.year} text-center ${inputFocusClass}${getYearError() ? " text-red-500" : ""}`,
-        onKeyDown: (e) => {
-          var _a;
-          lastKeyRef.current = e.key;
-          if ((e.key === "Backspace" || e.key === "Delete") && year === "") {
-            (_a = dayRef.current) == null ? void 0 : _a.focus();
-            e.preventDefault();
-          }
-          if (e.key === "ArrowDown" && (year === "" || Number(year) <= 1e3)) {
-            e.preventDefault();
-          }
-        },
-        style: { ...inputStyle, padding: sizeStyles[size].input.padding }
-      }
-    ) }),
-    /* @__PURE__ */ jsx3("div", { className: "absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none", children: /* @__PURE__ */ jsx3(CalendarFold, { className: "w-6 h-6 text-gray-400", style: { display: "block" } }) })
+          },
+          style: inputStyle
+        }
+      ) })
+    ] }),
+    /* @__PURE__ */ jsx3("div", { className: "absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none flex-shrink-0", children: /* @__PURE__ */ jsx3(CalendarFold, { className: "w-6 h-6 text-gray-400", style: { display: "block" } }) })
   ] }) });
 };
+var DateInputControlled_default = DateInputControlled;
 
 // src/components/DateInput/DateInputUncontrolled.tsx
 import { useState as useState2 } from "react";
@@ -362,7 +359,7 @@ import { jsx as jsx4 } from "react/jsx-runtime";
 var DateInputUncontrolled = ({ defaultValue = "", onChange, formSubmitted }) => {
   const [value, setValue] = useState2(defaultValue);
   return /* @__PURE__ */ jsx4(
-    DateInputControlled,
+    DateInputControlled_default,
     {
       value,
       onChange: (val) => {
@@ -380,7 +377,6 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
-  DateInputControlled,
   DateInputUncontrolled
 };
 //# sourceMappingURL=index.mjs.map
