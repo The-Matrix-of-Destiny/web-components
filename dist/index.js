@@ -120,7 +120,7 @@ var DateInputControlled = ({ value, onChange, formSubmitted, width = "w-56", foc
     purple: "focus:bg-lt-purple",
     green: "focus:bg-green-500",
     blue: "focus:bg-blue-500",
-    maroon: "focus:bg-lt-dark-red/80"
+    maroon: "focus:bg-lt-dark-red"
   };
   const focusTextClassMap = {
     white: "focus:text-white",
